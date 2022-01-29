@@ -33,6 +33,13 @@ public class Hangman {
   private static List<Character> guessedChars = new ArrayList<>();
 
   /**
+   * All guessed words.
+   * <p>
+   * Serves as reference for the guessing player to know which guesses were already made.
+   */
+  private static List<String> guessedWords = new ArrayList<>();
+
+  /**
    * Current amount of wrong guesses.
    */
   private static int wrongGuesses = 0;
@@ -52,7 +59,7 @@ public class Hangman {
       // Scanner for command-line input.
       Scanner scn = new Scanner(System.in);
     ) {
-      wordToGuess = getWord(scn);
+      wordToGuess = getWordToGuess(scn);
       guessStatus = wordToGuess.replaceAll(".", "_");
 
       for(int curNdx = 0; curNdx < 100; curNdx++) {
@@ -61,7 +68,18 @@ public class Hangman {
 
       while(true) {
         printStats();
-        letPlayerGuess(scn);
+
+        switch(getGuessMode(scn)) {
+          case 1:
+            letPlayerGuessChar(scn);
+            break;
+          
+          case 2:
+            letPlayerGuessWord(scn);
+            break;
+        }
+
+        printHangedMan();
         printSeparator();
 
         if(guessStatus.equals(wordToGuess)) {
@@ -76,10 +94,43 @@ public class Hangman {
       }
     }
 
-    System.out.printf("The word to guess was: %s", wordToGuess);
+    System.out.printf("The word to guess was: %s%n", wordToGuess);
 
     System.out.println();
     System.out.println("*** DONE ***");
+  }
+
+  /**
+   * Determines the guess mode by asking the player whether they want to guess a character or a word.
+   * 
+   * @param scn Scanner for command-line input.
+   * @return {@code 1} for character guess or {@code 2} for word guess.
+   */
+  private static int getGuessMode(Scanner scn) {
+    int guessMode = 0;
+    Character answer = null;
+
+    while(answer == null) {
+      System.out.print("What do you want to guess? ['c' = character, 'w' = word]: ");
+      answer = scn.next().trim().toLowerCase().charAt(0);
+
+      switch(answer) {
+        case 'c':
+          guessMode = 1;
+          break;
+
+        case 'w':
+          guessMode = 2;
+          break;
+
+        default:
+          answer = null;
+          System.out.println("Input is invalid. Only 'c' and 'w' are accepted.");
+          break;
+      }
+    }
+    
+    return guessMode;
   }
 
   /**
@@ -88,7 +139,7 @@ public class Hangman {
    * @param scn Scanner for command-line input.
    * @return {@link #wordToGuess}.
    */
-  private static String getWord(Scanner scn) {
+  private static String getWordToGuess(Scanner scn) {
     String wordToGuess = null;
     
     while(wordToGuess == null) {
@@ -146,13 +197,13 @@ public class Hangman {
    * 
    * @param scn Scanner for command-line input.
    */
-  private static void letPlayerGuess(Scanner scn) {
+  private static void letPlayerGuessChar(Scanner scn) {
     Character guessedChar = null;
-    StringBuilder guessStatusBuilder = new StringBuilder(guessStatus);
+    StringBuilder stringBuilderGuessStatus = new StringBuilder(guessStatus);
     int replacedChars = 0;
     
     while(guessedChar == null) {
-      System.out.print("Please guess a letter: ");
+      System.out.print("Please guess a character: ");
       guessedChar = scn.next().trim().toUpperCase().charAt(0);
 
       if(!isValidChar(guessedChar)) {
@@ -171,7 +222,7 @@ public class Hangman {
 
     for(int curNdx = 0; curNdx < wordToGuess.length(); curNdx++) {
       if(wordToGuess.charAt(curNdx) == guessedChar) {
-        guessStatusBuilder.setCharAt(curNdx, guessedChar);
+        stringBuilderGuessStatus.setCharAt(curNdx, guessedChar);
         replacedChars++;
       }
     }
@@ -179,22 +230,68 @@ public class Hangman {
     if(replacedChars == 0) {
       wrongGuesses++;
     } else {
-      guessStatus = guessStatusBuilder.toString();
+      guessStatus = stringBuilderGuessStatus.toString();
     }
+  }
+
+  /**
+   * Prompts player two to guess a character.
+   * <p>
+   * The guessed word must be {@link #isValidWord(String) valid} and must not be guessed already.
+   * <p>
+   * This function is also responsible for updating the fields
+   * {@link #guessedWords}, {@link #wrongGuesses} and {@link #guessStatus} if necessary.
+   * 
+   * @param scn Scanner for command-line input.
+   */
+  private static void letPlayerGuessWord(Scanner scn) {
+    String guessedWord = null;
+
+    while(guessedWord == null) {
+      System.out.print("Please guess a word: ");
+      guessedWord = scn.next().trim().toUpperCase();
+
+      if(!isValidWord(guessedWord)) {
+        guessedWord = null;
+        System.out.println("Input is invalid. Your word must only consist of letters and contain at least one letter.");
+      }
+
+      if(guessedWords.contains(guessedWord)) {
+        guessedWord = null;
+        System.out.println("Input is invalid. You already guessed that word.");
+      }
+    }
+
+    guessedWords.add(guessedWord);
+    guessedWords.sort(Comparator.naturalOrder());
+
+    if(guessedWord.equals(wordToGuess)) {
+      guessStatus = guessedWord;
+    } else {
+      wrongGuesses += 2;
+    }
+  }
+
+  /**
+   * TODO
+   */
+  private static void printHangedMan() {
+    ;
   }
 
   /**
    * Prints a separator to the Terminal for increased readability of the game. 
    */
   private static void printSeparator() {
-    System.out.printf("%n# %s #%n%n", "-".repeat(46));
+    System.out.printf("%n# %s #%n%n", "-".repeat(96));
   }
 
   /**
    * Prints information about the current round to the Terminal for the guessing player.
    */
   private static void printStats() {
-    System.out.printf("Previous guesses: %s%n", guessedChars.toString());
+    System.out.printf("Previously guesses characters: %s%n", guessedChars.toString());
+    System.out.printf("Previously guesses words: %s%n", guessedWords.toString());
     System.out.printf("Wrong guesses: %d (%d)%n", wrongGuesses, maxGuesses);
     System.out.println();
 
@@ -208,6 +305,4 @@ public class Hangman {
     }
     System.out.println();
   }
-
-  // TODO - print hanged man
 }

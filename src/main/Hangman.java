@@ -54,6 +54,14 @@ public class Hangman {
   private static int maxGuesses = 8;
 
   /**
+   * A two-dimensional grid that defines which character is when printed when drawing the hanged man.
+   * <p>
+   * The information is stored in form of Key-Value {@link javafx.util.Pair Pairs} {@code Pair<Integer I, String S>}
+   * where {@code I} is the amount of wrong guesses to match or exceed and {@code S} the part of the hanged man to print.
+   */
+  private static List<List<Pair<Integer, String>>> drawingGrid = getDrawingGrid();
+
+  /**
    * Executes the game.
    * 
    * @param args Command-line arguments.
@@ -102,6 +110,77 @@ public class Hangman {
 
     System.out.println();
     System.out.println("*** DONE ***");
+  }
+
+  /**
+   * @return {@link #drawingGrid}
+   */
+  private static List<List<Pair<Integer, String>>> getDrawingGrid() {
+    List<List<Pair<Integer, String>>> drawingGrid = new ArrayList<>(8);
+    List<Pair<Integer, String>> drawingGridRowOne = new ArrayList<>(6);
+    List<Pair<Integer, String>> drawingGridRowTwo = new ArrayList<>(6);
+    List<Pair<Integer, String>> drawingGridRowThree = new ArrayList<>(6);
+    List<Pair<Integer, String>> drawingGridRowFour = new ArrayList<>(6);
+    List<Pair<Integer, String>> drawingGridRowFive = new ArrayList<>(6);
+    List<Pair<Integer, String>> drawingGridRowSix = new ArrayList<>(6);
+    List<Pair<Integer, String>> drawingGridRowSeven = new ArrayList<>(1);
+    List<Pair<Integer, String>> drawingGridRowEight = new ArrayList<>(1);
+
+    drawingGridRowOne.add(new Pair<>(4, "+"));
+    drawingGridRowOne.add(new Pair<>(5, "-"));
+    drawingGridRowOne.add(new Pair<>(5, "-"));
+    drawingGridRowOne.add(new Pair<>(6, "-"));
+    drawingGridRowOne.add(new Pair<>(6, "-"));
+    drawingGridRowOne.add(new Pair<>(7, "+"));
+    drawingGrid.add(drawingGridRowOne);
+
+    drawingGridRowTwo.add(new Pair<>(4, "|"));
+    drawingGridRowTwo.add(new Pair<>(7, " "));
+    drawingGridRowTwo.add(new Pair<>(7, " "));
+    drawingGridRowTwo.add(new Pair<>(7, " "));
+    drawingGridRowTwo.add(new Pair<>(7, " "));
+    drawingGridRowTwo.add(new Pair<>(7, "|"));
+    drawingGrid.add(drawingGridRowTwo);
+
+    drawingGridRowThree.add(new Pair<>(3, "|"));
+    drawingGridRowThree.add(new Pair<>(8, " "));
+    drawingGridRowThree.add(new Pair<>(8, " "));
+    drawingGridRowThree.add(new Pair<>(8, " "));
+    drawingGridRowThree.add(new Pair<>(8, " "));
+    drawingGridRowThree.add(new Pair<>(8, "O"));
+    drawingGrid.add(drawingGridRowThree);
+
+    drawingGridRowFour.add(new Pair<>(3, "|"));
+    drawingGridRowFour.add(new Pair<>(8, " "));
+    drawingGridRowFour.add(new Pair<>(8, " "));
+    drawingGridRowFour.add(new Pair<>(8, " "));
+    drawingGridRowFour.add(new Pair<>(8, "-"));
+    drawingGridRowFour.add(new Pair<>(8, "+-"));
+    drawingGrid.add(drawingGridRowFour);
+
+    drawingGridRowFive.add(new Pair<>(2, "|"));
+    drawingGridRowFive.add(new Pair<>(9, " "));
+    drawingGridRowFive.add(new Pair<>(9, " "));
+    drawingGridRowFive.add(new Pair<>(9, " "));
+    drawingGridRowFive.add(new Pair<>(9, " "));
+    drawingGridRowFive.add(new Pair<>(9, "|"));
+    drawingGrid.add(drawingGridRowFive);
+
+    drawingGridRowSix.add(new Pair<>(0, "|"));
+    drawingGridRowSix.add(new Pair<>(0, " "));
+    drawingGridRowSix.add(new Pair<>(0, " "));
+    drawingGridRowSix.add(new Pair<>(0, " "));
+    drawingGridRowSix.add(new Pair<>(0, "/"));
+    drawingGridRowSix.add(new Pair<>(0, " \\"));
+    drawingGrid.add(drawingGridRowSix);
+
+    drawingGridRowSeven.add(new Pair<>(1, "|"));
+    drawingGrid.add(drawingGridRowSeven);
+
+    drawingGridRowEight.add(new Pair<>(1, "="));
+    drawingGrid.add(drawingGridRowEight);
+
+    return drawingGrid;
   }
 
   /**
@@ -277,14 +356,27 @@ public class Hangman {
   }
 
   /**
-   * TODO
+   * Prints the hanged man.
+   * 
+   * @see {@link #drawingGrid}.
    */
   private static void printHangedMan() {
-    List<List<Pair<Integer, String>>> grid = new ArrayList<>();
+    System.out.println();
 
-    // first row
-    grid.add(new ArrayList<>());
-    grid.get(0).add(new Pair<>(0, ""));
+    for(int i = 0; i < drawingGrid.size(); i++) {
+      List<Pair<Integer, String>> currentRow = drawingGrid.get(i);
+
+      for(int j = 0; j < currentRow.size(); j++) {
+        Pair<Integer, String> currentPair = currentRow.get(j);
+
+        // TODO
+        if(currentPair.getKey() >= wrongGuesses) {
+          System.out.print(currentPair.getValue());
+        }
+      }
+
+      System.out.println();
+    }
   }
 
   /**

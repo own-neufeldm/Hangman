@@ -1,7 +1,11 @@
+package main;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+
+import javafx.util.Pair;
 
 /**
  * This class serves the purpose of playing a game of Hangman in a Terminal.
@@ -47,7 +51,7 @@ public class Hangman {
   /**
    * Maximum allowed amount of wrong guesses.
    */
-  private static int maxGuesses = 5;
+  private static int maxGuesses = 8;
 
   /**
    * Executes the game.
@@ -276,7 +280,11 @@ public class Hangman {
    * TODO
    */
   private static void printHangedMan() {
-    ;
+    List<List<Pair<Integer, String>>> grid = new ArrayList<>();
+
+    // first row
+    grid.add(new ArrayList<>());
+    grid.get(0).add(new Pair<>(0, ""));
   }
 
   /**

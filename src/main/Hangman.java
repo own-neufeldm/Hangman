@@ -49,7 +49,7 @@ public class Hangman {
   private static int wrongGuesses = 0;
 
   /**
-   * Maximum allowed amount of wrong guesses.
+   * Maximum amount of wrong guesses.
    */
   private static int maxGuesses = 8;
 
@@ -166,12 +166,12 @@ public class Hangman {
     drawingGridRowFive.add(new Pair<>(9, "|"));
     drawingGrid.add(drawingGridRowFive);
 
-    drawingGridRowSix.add(new Pair<>(0, "|"));
-    drawingGridRowSix.add(new Pair<>(0, " "));
-    drawingGridRowSix.add(new Pair<>(0, " "));
-    drawingGridRowSix.add(new Pair<>(0, " "));
-    drawingGridRowSix.add(new Pair<>(0, "/"));
-    drawingGridRowSix.add(new Pair<>(0, " \\"));
+    drawingGridRowSix.add(new Pair<>(2, "|"));
+    drawingGridRowSix.add(new Pair<>(9, " "));
+    drawingGridRowSix.add(new Pair<>(9, " "));
+    drawingGridRowSix.add(new Pair<>(9, " "));
+    drawingGridRowSix.add(new Pair<>(9, "/"));
+    drawingGridRowSix.add(new Pair<>(9, " \\"));
     drawingGrid.add(drawingGridRowSix);
 
     drawingGridRowSeven.add(new Pair<>(1, "|"));
@@ -217,10 +217,27 @@ public class Hangman {
   }
 
   /**
+   * @return {@link #guessStatus} with a whitespace after each character.
+   */
+  private static String getGuessStatusForPrinting() {
+    StringBuilder stringBuilderGuessStatus = new StringBuilder();
+
+    for(int i = 0; i < guessStatus.length(); i++) {
+      stringBuilderGuessStatus.append(guessStatus.charAt(i));
+
+      if(i != (guessStatus.length() - 1)) {
+        stringBuilderGuessStatus.append(' ');
+      }
+    }
+
+    return stringBuilderGuessStatus.toString();
+  }
+
+  /**
    * Retrieves {@link #wordToGuess} from player one via command-line.
    * 
    * @param scn Scanner for command-line input.
-   * @return {@link #wordToGuess}.
+   * @return {@link #wordToGuess}
    */
   private static String getWordToGuess(Scanner scn) {
     String wordToGuess = null;
@@ -339,6 +356,11 @@ public class Hangman {
         System.out.println("Input is invalid. Your word must only consist of letters and contain at least one letter.");
       }
 
+      if(guessedWord.length() != wordToGuess.length()) {
+        guessedWord = null;
+        System.out.println("Input is invalid. Your word must be of the same length as the word to guess.");
+      }
+
       if(guessedWords.contains(guessedWord)) {
         guessedWord = null;
         System.out.println("Input is invalid. You already guessed that word.");
@@ -369,8 +391,7 @@ public class Hangman {
       for(int j = 0; j < currentRow.size(); j++) {
         Pair<Integer, String> currentPair = currentRow.get(j);
 
-        // TODO
-        if(currentPair.getKey() >= wrongGuesses) {
+        if(wrongGuesses >= currentPair.getKey()) {
           System.out.print(currentPair.getValue());
         }
       }
@@ -390,19 +411,9 @@ public class Hangman {
    * Prints information about the current round to the Terminal for the guessing player.
    */
   private static void printStats() {
-    System.out.printf("Previously guesses characters: %s%n", guessedChars.toString());
-    System.out.printf("Previously guesses words: %s%n", guessedWords.toString());
-    System.out.printf("Wrong guesses: %d (%d)%n", wrongGuesses, maxGuesses);
-    System.out.println();
-
-    System.out.printf("Word to guess (%d): ", wordToGuess.length());
-    for(int curNdx = 0; curNdx < guessStatus.length(); curNdx++) {
-      System.out.print(guessStatus.charAt(curNdx));
-
-      if(curNdx != (guessStatus.length() - 1)) {
-        System.out.print(" ");
-      }
-    }
-    System.out.println();
+    System.out.printf("%-30s : %s%n", "Previously guessed characters", guessedChars.toString());
+    System.out.printf("%-30s : %s%n", "Previously guessed words", guessedWords.toString());
+    System.out.printf("%-30s : %d (%d)%n", "Wrong guesses", wrongGuesses, maxGuesses);
+    System.out.printf("%-30s : %s (%d)%n%n", "Word to guess", getGuessStatusForPrinting(), wordToGuess.length());
   }
 }

@@ -1,5 +1,6 @@
 package main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -58,6 +59,8 @@ public class Hangman {
    * @param args Command-line arguments.
    */
   public static void main(String[] args) {
+    clearScreen();
+
     try (
       // Scanner for command-line input.
       Scanner scn = new Scanner(System.in);
@@ -65,24 +68,22 @@ public class Hangman {
       wordToGuess = promptWordToGuess(scn);
       guessStatus = wordToGuess.replaceAll(".", "_");
 
-      for (int i = 0; i < 100; i++) {
-        System.out.println();
-      }
-
       while (true) {
+        clearScreen();
         printHangedMan();
         System.out.println();
         printStats();
         System.out.println();
         letPlayerGuess(scn);
-        printSeparator();
-
+        
         if (guessStatus.equals(wordToGuess)) {
+          printSeparator();
           System.out.println("Congratulations, you won!");
           break;
         }
 
         if (wrongGuesses > maxGuesses) {
+          printSeparator();
           printHangedMan();
           System.out.println();
           System.out.println("Oh no, you lost!");
@@ -92,8 +93,15 @@ public class Hangman {
     }
 
     System.out.printf("The word to guess was: %s%n", wordToGuess);
-    System.out.println();
-    System.out.println("*** DONE ***");
+  }
+
+  /** Clears the console screen (bash). */
+  public static void clearScreen() {
+    try {
+      new ProcessBuilder("bash", "-c", "clear").inheritIO().start().waitFor();
+    } catch (IOException | InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -200,6 +208,11 @@ public class Hangman {
         Pair<Integer, String> currentPair = currentRow.get(j);
 
         if(wrongGuesses >= currentPair.getKey()) {
+          try {
+            Thread.sleep(150L);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
           System.out.print(currentPair.getValue());
         }
       }
@@ -208,18 +221,14 @@ public class Hangman {
     }
   }
 
-  /**
-   * Prints a separator to the Terminal for increased readability of the game. 
-   */
+  /** Prints a horizontal separator line to the terminal. */
   private static void printSeparator() {
     System.out.printf("%n# %s #%n%n", "-".repeat(96));
   }
 
-  /**
-   * Prints information about the current round to the Terminal for the guessing player.
-   */
+  /** Prints information about the current round to the terminal. */
   private static void printStats() {
-    System.out.printf("%-29s : %s%n", "Previously guessed characters", guessedChars.toString());
+    System.out.printf("%-29s : %s%n", "Previously guessed characters",guessedChars.toString());
     System.out.printf("%-29s : %s%n", "Previously guessed words", guessedWords.toString());
     System.out.printf("%-29s : %d (%d)%n", "Wrong guesses", wrongGuesses, maxGuesses);
     System.out.printf("%-29s : %s (%d)%n", "Word to guess", guessStatus.replaceAll("\\B", " "), wordToGuess.length());

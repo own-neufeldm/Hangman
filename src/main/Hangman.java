@@ -228,7 +228,7 @@ public class Hangman {
 
   /** Prints information about the current round to the terminal. */
   private static void printStats() {
-    System.out.printf("%-29s : %s%n", "Previously guessed characters",guessedChars.toString());
+    System.out.printf("%-29s : %s%n", "Previously guessed characters", guessedChars.toString());
     System.out.printf("%-29s : %s%n", "Previously guessed words", guessedWords.toString());
     System.out.printf("%-29s : %d (%d)%n", "Wrong guesses", wrongGuesses, maxGuesses);
     System.out.printf("%-29s : %s (%d)%n", "Word to guess", guessStatus.replaceAll("\\B", " "), wordToGuess.length());

@@ -201,13 +201,13 @@ public class Hangman {
    * @see {@link #drawingGrid}.
    */
   private static void printHangedMan() {
-    for(int i = 0; i < DRAWING_GRID.size(); i++) {
+    for (int i = 0; i < DRAWING_GRID.size(); i++) {
       List<Pair<Integer, String>> currentRow = DRAWING_GRID.get(i);
 
-      for(int j = 0; j < currentRow.size(); j++) {
+      for (int j = 0; j < currentRow.size(); j++) {
         Pair<Integer, String> currentPair = currentRow.get(j);
 
-        if(wrongGuesses >= currentPair.getKey()) {
+        if (wrongGuesses >= currentPair.getKey()) {
           try {
             Thread.sleep(150L);
           } catch (InterruptedException e) {

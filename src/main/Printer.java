@@ -12,12 +12,12 @@ public class Printer {
   /** The game this printer serves. */
   private Game game;
 
-  /** Sets {@link #game the game this printer serves}. */
+  /** Sets the {@link #game game this printer serves}. */
   private void setGame(Game game) {
     this.game = game;
   }
 
-  /** Returns {@link #game the game this printer serves}. */
+  /** Returns the {@link #game game this printer serves}. */
   private Game getGame() {
     return this.game;
   }
@@ -31,12 +31,12 @@ public class Printer {
    */
   private List<List<Pair<Integer, String>>> drawingGrid;
 
-  /** Sets {@link #drawingGrid the drawing grid}. */
+  /** Sets the {@link #drawingGrid drawing grid}. */
   private void setDrawingGrid(List<List<Pair<Integer, String>>> drawingGrid) {
     this.drawingGrid = drawingGrid;
   }
 
-  /** Returns {@link #drawingGrid the drawing grid}. */
+  /** Returns the {@link #drawingGrid drawing grid}. */
   private List<List<Pair<Integer, String>>> getDrawingGrid() {
     return this.drawingGrid;
   }
@@ -44,7 +44,7 @@ public class Printer {
   /**
    * Constructs an instance of this class.
    * 
-   * @param game {@link #game the game this printer serves}.
+   * @param game the {@link #game game this printer serves}.
    */
   public Printer(Game game) {
     setGame(game);

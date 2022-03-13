@@ -22,6 +22,19 @@ public class Printer {
     return this.game;
   }
 
+  /** Previous amount of wrong guesses. */
+  private int previousWrongGuesses;
+
+  /** Sets the {@link #previousWrongGuesses previous amount of wrong guesses}. */
+  private void setPreviousWrongGuesses(int previousWrongGuesses) {
+    this.previousWrongGuesses = previousWrongGuesses;
+  }
+
+  /** Returns the {@link #previousWrongGuesses previous amount of wrong guesses}. */
+  private int getPreviousWrongGuesses() {
+    return this.previousWrongGuesses;
+  }
+
   /**
    * A two-dimensional list that defines which character is when printed when
    * drawing the hanged man. The information is stored in form of Key-Value
@@ -49,6 +62,7 @@ public class Printer {
   public Printer(Game game) {
     setGame(game);
     setDrawingGrid(readDrawingGrid());
+    setPreviousWrongGuesses(0);
   }
 
   /**
@@ -102,7 +116,9 @@ public class Printer {
 
   /** Updates the information displayed on the screen. */
   public void updateScreen() {
-    TerminalScreenApi.clearScreen();
+    TerminalScreenApi.setCurorPosition(getDrawingGrid().size(), 0);
+    TerminalScreenApi.clearScreenFromCursorToEnd();
+    TerminalScreenApi.setCurorPosition(0, 0);
     printHangedMan();
     System.out.println();
     printStats();
@@ -117,19 +133,24 @@ public class Printer {
       for (int j = 0; j < currentRow.size(); j++) {
         Pair<Integer, String> currentPair = currentRow.get(j);
 
-        if (getGame().getWrongGuesses() >= currentPair.getKey()) {
-          try {
-            Thread.sleep(150L);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-            System.exit(1);
+          if (currentPair.getKey() <= getGame().getWrongGuesses()) {
+            if (currentPair.getKey() > getPreviousWrongGuesses()) {
+              try {
+                Thread.sleep(300);
+              } catch (InterruptedException e) {
+                e.printStackTrace();
+                System.exit(1);
+              }
+
+              System.out.print(currentPair.getValue());
+            }
           }
-          System.out.print(currentPair.getValue());
-        }
       }
 
       System.out.println();
     }
+
+    setPreviousWrongGuesses(getGame().getWrongGuesses());
   }
 
   /** Prints a horizontal separator line. */

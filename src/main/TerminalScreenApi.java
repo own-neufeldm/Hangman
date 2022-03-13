@@ -101,6 +101,11 @@ public abstract class TerminalScreenApi {
 
   /** Clears the screen. */
   public static void clearScreen() {
-    exec("clear");
+    exec("tput clear");
+  }
+
+  /** Clears the screen from the cursor to the end of the screen. */
+  public static void clearScreenFromCursorToEnd() {
+    exec("tput ed");
   }
 }

@@ -19,7 +19,7 @@ public abstract class TerminalScreenApi {
    * @param processBuilder The ProcessBuilder to start.
    * @return The resulting process.
    */
-  private static Process startProcessBuilder(ProcessBuilder processBuilder) {
+  public static Process startProcessBuilder(ProcessBuilder processBuilder) {
     Process process = null;
 
     try {
@@ -48,7 +48,7 @@ public abstract class TerminalScreenApi {
    * @return The read output.
    * @see #startProcessBuilder(ProcessBuilder)
    */
-  private static void exec(String command) {
+  public static void exec(String command) {
     startProcessBuilder(
         new ProcessBuilder("bash", "-c", command)
         .redirectOutput(Redirect.INHERIT)
@@ -63,7 +63,7 @@ public abstract class TerminalScreenApi {
    * @return The read output.
    * @see #startProcessBuilder(ProcessBuilder)
    */
-  private static String execAndReadOutput(String command) {
+  public static String execAndReadOutput(String command) {
     InputStream processOutput = 
         startProcessBuilder(new ProcessBuilder("bash", "-c", command))
         .getInputStream()

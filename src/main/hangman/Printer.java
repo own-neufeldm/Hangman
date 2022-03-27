@@ -1,7 +1,8 @@
-package main;
+package main.hangman;
 
 import java.util.List;
 import javafx.util.Pair;
+import main.terminal.Screen;
 
 /** 
  * This class serves the purpose of printing information about a Hangman game.
@@ -107,7 +108,7 @@ public class Printer {
 
   /** Initializes the screen for playing. */
   public void initializeScreen() {
-    TerminalScreenApi.clearScreen();
+    Screen.clear();
     printHangedMan();
     System.out.println();
     printStats();
@@ -116,9 +117,9 @@ public class Printer {
 
   /** Updates the information displayed on the screen. */
   public void updateScreen() {
-    TerminalScreenApi.setCurorPosition(getDrawingGrid().size(), 0);
-    TerminalScreenApi.clearScreenFromCursorToEnd();
-    TerminalScreenApi.setCurorPosition(0, 0);
+    Screen.setCurorPosition(getDrawingGrid().size(), 0);
+    Screen.clearFromCursorToEnd();
+    Screen.setCurorPosition(0, 0);
     printHangedMan();
     System.out.println();
     printStats();

@@ -1,4 +1,4 @@
-package main;
+package main.hangman;
 
 import java.util.ArrayList;
 import java.util.Collections;

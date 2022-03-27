@@ -1,6 +1,7 @@
-package main;
+package main.hangman;
 
 import java.util.Scanner;
+import main.terminal.Screen;
 
 /**
  * This calls serves the purpose of launching a game of Hangman.
@@ -17,7 +18,7 @@ public class Launcher {
     try (
       Scanner scanner = new Scanner(System.in);
     ) {
-      TerminalScreenApi.clearScreen();
+      Screen.clear();
 
       Game game = new Game(scanner, 8);
 

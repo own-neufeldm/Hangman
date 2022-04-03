@@ -5,7 +5,7 @@ import java.util.Scanner;
 import main.terminal.Screen;
 
 /**
- * This class serves the purpose of launching a game of Hangman.
+ * The Launcher of the game.
  * 
  * @author Neufeld-Martin
  */
@@ -17,13 +17,10 @@ public class Launcher {
    */
   public static void main(String[] args) {   
     Screen.clear();
-    
     try (
-      Scanner scanner = new Scanner(System.in);
+      Scanner userInputReader = new Scanner(System.in);
     ) {
-      Game game = new Game(scanner, 8);
-      game.play();
-
+      Frontend.play(userInputReader, new Backend("default".toUpperCase(), "[A-Z]", 8));
       System.out.printf("%nPress enter to exit ...");
       System.in.read();
     } catch (IOException e) {

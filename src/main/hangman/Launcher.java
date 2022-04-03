@@ -5,7 +5,7 @@ import java.util.Scanner;
 import main.terminal.Screen;
 
 /**
- * This calls serves the purpose of launching a game of Hangman.
+ * This class serves the purpose of launching a game of Hangman.
  * 
  * @author Neufeld-Martin
  */

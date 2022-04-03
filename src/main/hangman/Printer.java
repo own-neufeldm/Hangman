@@ -66,11 +66,7 @@ public class Printer {
     setPreviousWrongGuesses(0);
   }
 
-  /**
-   * TODO: read from file.
-   * 
-   * Composes a {@link #drawingGrid drawing grid}.
-   */
+  /** Composes a {@link #drawingGrid drawing grid}. */
   private List<List<Pair<Integer, String>>> readDrawingGrid() {
     return List.of(
         List.of(

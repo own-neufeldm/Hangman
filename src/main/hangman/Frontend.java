@@ -12,40 +12,77 @@ import main.terminal.Screen;
  * @author Neufeld-Martin
  * @see main.hangman.Backend
  */
-public abstract class Frontend {
+public class Frontend {
+  /** Reader for command-line input of the user. */
+  private Scanner userInputReader;
+
+  /** The backend of the game. */
+  private Backend backend;
+
+  // ############################################################################################ //
+
+  public Frontend(Scanner userInputReader) {
+    setUserInputReader(userInputReader);
+    setBackend(new Backend("default".toUpperCase(), "[A-Z]", 8));
+  }
+
+  // ############################################################################################ //
+
+  /** Sets the {@link #userInputReader reader for command-line input of the user}. */
+  private void setUserInputReader(Scanner userInputReader) {
+    this.userInputReader = userInputReader;
+  }
+
+  /** Returns the {@link #userInputReader reader for command-line input of the user}. */
+  public Scanner getUserInputReader() {
+    return this.userInputReader;
+  }
+
+  /** Sets the {@link #backend backend of the game}. */
+  private void setBackend(Backend backend) {
+    this.backend = backend;
+  }
+
+  /** Returns the {@link #backend backend of the game}. */
+  public Backend getBackend() {
+    return this.backend;
+  }
+
+  // ############################################################################################ //
+
   /** TODO: add description. */
-  public static void play(Scanner userInputReader, Backend game) {
-    initializeScreen(game);
+  public void play() {
+    initializeScreen();
 
     while (true) {
-      letPlayerGuess(userInputReader, game);
-      updateScreen(game);
+      letPlayerGuess();
+      updateScreen();
 
-      if (game.hasGuessingPlayerWon()) {
+      if (getBackend().hasGuessingPlayerWon()) {
         printSeparator();
         System.out.println("Congratulations, you won!");
         break;
       }
 
-      if (game.hasGuessingPlayerLost()) {
+      if (getBackend().hasGuessingPlayerLost()) {
         printSeparator();
         System.out.println("Oh no, you lost!");
         break;
       }
     }
 
-    System.out.printf("The word to guess was: %s%n", game.getWordToGuess());
+    System.out.printf("The word to guess was: %s%n", getBackend().getWordToGuess());
   }
 
   /** TODO: add description. */
-  private static void letPlayerGuess(Scanner userInputReader, Backend game) {
-    switch (promptGuessMode(userInputReader)) {
+  private void letPlayerGuess() {
+    switch (promptGuessMode()) {
       case 1:
-        letPlayerGuessChar(userInputReader, game);
+        letPlayerGuessChar();
         break;
 
       case 2:
-        letPlayerGuessWord(userInputReader, game);
+        letPlayerGuessWord();
         break;
       
       default:
@@ -56,14 +93,12 @@ public abstract class Frontend {
    * Determines the guess mode by asking the player whether they want to guess
    * a character or a word.
    * 
-   * @param userInputReader The reader for command-line input of the user.
-   * 
    * @return One of the following modes represented as integers:<ul>
    *     <li>{@code 1} - guess character.</li>
    *     <li>{@code 2} - guess word.</li>
    *     </ul>
    */
-  private static int promptGuessMode(Scanner userInputReader) {
+  private int promptGuessMode() {
     System.out.printf(
       "%s%n%s%n%s%n",
       "What do you want to guess?",
@@ -73,7 +108,7 @@ public abstract class Frontend {
     
     while (true) {
       System.out.print(": ");
-      String input = userInputReader.next().trim().toLowerCase();
+      String input = getUserInputReader().next().trim().toLowerCase();
       switch (input.charAt(0)) {
         case '1':
           return 1;
@@ -88,86 +123,86 @@ public abstract class Frontend {
   }
 
   /** TODO: add description. */
-  private static void letPlayerGuessChar(Scanner userInputReader, Backend game) {
+  private void letPlayerGuessChar() {
     System.out.print("Please guess a character");
 
     Character guessedChar = null;
     do {
       System.out.print(": ");
       guessedChar = userInputReader.next().trim().toUpperCase().charAt(0);
-    } while (!validateCharGuess(game, guessedChar));
+    } while (!validateCharGuess(guessedChar));
 
-    game.play(guessedChar);
+    getBackend().play(guessedChar);
   }
 
   /** TODO: add description. */
-  private static boolean validateCharGuess(Backend game, Character guessedChar) {
-    if (game.getGuessedCharsReadOnly().contains(guessedChar)) {
+  private boolean validateCharGuess(Character guessedChar) {
+    if (getBackend().getGuessedCharsReadOnly().contains(guessedChar)) {
       System.out.println("Input is invalid. You already guessed that word.");
       return false;
     }
     
-    if (guessedChar.toString().matches(game.getCharMatchingPattern())) {
+    if (guessedChar.toString().matches(getBackend().getCharMatchingPattern())) {
       return true;
     }
     System.out.printf(
         "Input is invalid. Your character must match the following pattern: %s%n",
-        game.getCharMatchingPattern()
+        getBackend().getCharMatchingPattern()
     );
     return false;
   }
 
   /** TODO: add description. */
-  private static void letPlayerGuessWord(Scanner userInputReader, Backend game) {  
+  private void letPlayerGuessWord() {  
     System.out.print("Please guess a word");
 
     String guessedWord = null;
     do {
       System.out.print(": ");
       guessedWord = userInputReader.next().trim().toUpperCase();
-    } while (!validateWordGuess(game, guessedWord));
+    } while (!validateWordGuess(guessedWord));
 
-    game.play(guessedWord);
+    getBackend().play(guessedWord);
   }
 
 
   /** TODO: add description. */
-  private static boolean validateWordGuess(Backend game, String guessedWord) {
-    if (game.getGuessedWordsReadOnly().contains(guessedWord)) {
+  private boolean validateWordGuess(String guessedWord) {
+    if (getBackend().getGuessedWordsReadOnly().contains(guessedWord)) {
       System.out.println("Input is invalid. You already guessed that word.");
       return false;
     }
 
     for (int i = 0; i < guessedWord.length(); i++ ) {
-      if (guessedWord.substring(i, i + 1).matches(game.getCharMatchingPattern())) {
+      if (guessedWord.substring(i, i + 1).matches(getBackend().getCharMatchingPattern())) {
         return true;
       }
     }
     System.out.printf(
         "Input is invalid. Each character of your word must match the following pattern: %s%n",
-        game.getCharMatchingPattern()
+        getBackend().getCharMatchingPattern()
     );
     return false;
   }
 
   /** TODO: add description. */
-  private static void initializeScreen(Backend game) {
+  private void initializeScreen() {
     Screen.clear();
-    printHangedMan(game);
+    printHangedMan();
     System.out.println();
-    printStats(game);
+    printStats();
     System.out.println();
   }
 
   /** TODO: add description. */
-  private static void printHangedMan(Backend game) {
+  private void printHangedMan() {
     for (int i = 0; i < getDrawingGrid().size(); i++) {
       List<Pair<Integer, String>> currentRow = getDrawingGrid().get(i);
 
       for (int j = 0; j < currentRow.size(); j++) {
         Pair<Integer, String> currentPair = currentRow.get(j);
 
-        if (currentPair.getKey() <= game.getCurWrongGuesses()) {
+        if (currentPair.getKey() <= getBackend().getCurWrongGuesses()) {
           try {
             Thread.sleep(300);
           } catch (InterruptedException e) {
@@ -184,7 +219,7 @@ public abstract class Frontend {
   }
 
   /** TODO: add description. */
-  private static List<List<Pair<Integer, String>>> getDrawingGrid() {
+  private List<List<Pair<Integer, String>>> getDrawingGrid() {
     return List.of(
         List.of(
             new Pair<>(4, "+"), new Pair<>(5, "-"), new Pair<>(5, "-"),
@@ -220,31 +255,31 @@ public abstract class Frontend {
   }
 
   /** TODO: add description. */
-  private static void printStats(Backend game) {
+  private void printStats() {
     printPrettyPairOverview(
         new Pair<>(
             "Previously guessed characters",
-            game.getGuessedCharsReadOnly().toString()
+            getBackend().getGuessedCharsReadOnly().toString()
         ),
         new Pair<>(
             "Previously guessed words",
-            game.getGuessedWordsReadOnly().toString()
+            getBackend().getGuessedWordsReadOnly().toString()
         ),
         new Pair<>(
             "Wrong guesses",
             new StringBuilder()
-                .append(game.getCurWrongGuesses())
+                .append(getBackend().getCurWrongGuesses())
                 .append(" (")
-                .append(game.getMaxWrongGuesses())
+                .append(getBackend().getMaxWrongGuesses())
                 .append(")")
                 .toString()
         ),
         new Pair<>(
             "Word to guess",
             new StringBuilder()
-                .append(game.getGuessStatus().replaceAll("\\B", " "))
+                .append(getBackend().getGuessStatus().replaceAll("\\B", " "))
                 .append(" (")
-                .append(game.getWordToGuess().length())
+                .append(getBackend().getWordToGuess().length())
                 .append(")")
                 .toString()
         )
@@ -257,7 +292,7 @@ public abstract class Frontend {
    * @param pairs The key-value pairs to print.
    */
   @SafeVarargs
-  private static void printPrettyPairOverview(Pair<String, String>... pairs) {
+  private void printPrettyPairOverview(Pair<String, String>... pairs) {
     int greatestKeyLength = 0;
     for (Pair<String, String> pair : pairs) {
       int curKeyLength = pair.getKey().length();
@@ -279,18 +314,18 @@ public abstract class Frontend {
   }
 
   /** TODO: add description. */
-  private static void printSeparator() {
+  private void printSeparator() {
     System.out.printf("%n# %s #%n%n", "-".repeat(96));
   }
 
   /** TODO: add description. */
-  private static void updateScreen(Backend game) {
+  private void updateScreen() {
     Screen.setCurorPosition(getDrawingGrid().size(), 0);
     Screen.clearFromCursorToEnd();
     Screen.setCurorPosition(0, 0);
-    printHangedMan(game);
+    printHangedMan();
     System.out.println();
-    printStats(game);
+    printStats();
     System.out.println();
   }
 }

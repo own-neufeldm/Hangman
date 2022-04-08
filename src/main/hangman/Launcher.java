@@ -20,7 +20,7 @@ public class Launcher {
     try (
       Scanner userInputReader = new Scanner(System.in);
     ) {
-      Frontend.play(userInputReader, new Backend("default".toUpperCase(), "[A-Z]", 8));
+      new Frontend(userInputReader).play();
       System.out.printf("%nPress enter to exit ...");
       System.in.read();
     } catch (IOException e) {

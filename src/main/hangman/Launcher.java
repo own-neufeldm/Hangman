@@ -20,7 +20,7 @@ public class Launcher {
     try (
       Scanner userInputReader = new Scanner(System.in);
     ) {
-      new Frontend(userInputReader).play();
+      new Frontend(userInputReader).run();
       System.out.printf("%nPress enter to exit ...");
       System.in.read();
     } catch (IOException e) {

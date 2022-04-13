@@ -35,4 +35,14 @@ public class Screen {
   public static void clearFromCursorToEnd() {
     Bash.exec("tput ed");
   }
+
+  /** Clears the screen from the cursor to the beginning of the line. */
+  public static void clearFromCursorToBeginningOfLine() {
+    Bash.exec("tput el1");
+  }
+
+  /** Clears the screen from the cursor to the end of the line. */
+  public static void clearFromCursorToEndOfLine() {
+    Bash.exec("tput el");
+  }
 }

@@ -1,5 +1,6 @@
 package main.hangman;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,7 +24,6 @@ public class Frontend {
 
   public Frontend(Scanner userInputReader) {
     setUserInputReader(userInputReader);
-    setBackend(new Backend("default".toUpperCase(), "[A-Z]", 8));
   }
 
   // ############################################################################################ //
@@ -51,7 +51,24 @@ public class Frontend {
   // ############################################################################################ //
 
   /** TODO: add description. */
-  public void play() {
+  public void run() {
+    Screen.clear();
+    setBackend(new Backend("default".toUpperCase(), "[A-Z]", 8, determinePlayers()));
+    play();
+  }
+
+  /** TODO: add description. */
+  private List<String> determinePlayers() {
+    List<String> players = new ArrayList<>();
+    for (int i = 0; i < 2; i++ ) {
+      System.out.printf("Player %d, please enter your name: ", i);
+      players.add(getUserInputReader().next().trim().toUpperCase());
+    }
+    return players;
+  }
+
+  /** TODO: add description. */
+  private void play() {
     initializeScreen();
 
     while (true) {

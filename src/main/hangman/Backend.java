@@ -43,6 +43,14 @@ public class Backend {
   /** Maximum amount of wrong guesses. */
   private int maxWrongGuesses;
 
+    /**
+   * The players of the game.
+   * <p>
+   * Index {@code 0} is the player who provides the word to guess,
+   * index {@code 1} is the player who guesses.
+   */
+  List<String> players;
+
   // ############################################################################################ //
 
   /**
@@ -58,10 +66,11 @@ public class Backend {
    *     the {@link #maxWrongGuesses maximum amount of wrong guesses}.
    *     must be between 0 and 50 (inclusive).
    */
-  public Backend(String wordToGuess, String charMatchingPattern, int maxWrongGuesses) {
+  public Backend(String wordToGuess, String charMatchingPattern, int maxWrongGuesses, List<String> players) {
     Objects.requireNonNull(wordToGuess);
     Objects.requireNonNull(charMatchingPattern);
     Objects.checkIndex(maxWrongGuesses, 51);
+    Objects.requireNonNull(players);
 
     setWordToGuess(wordToGuess);
     setGuessStatus(getWordToGuess().replaceAll(".", "_"));
@@ -69,6 +78,7 @@ public class Backend {
     setGuessedWords(new ArrayList<>());
     setCharMatchingPattern(charMatchingPattern);
     setMaxWrongGuesses(maxWrongGuesses);
+    setPlayers(new ArrayList<>());
   }
 
   // ############################################################################################ //
@@ -151,6 +161,21 @@ public class Backend {
   /** Returns the {@link #maxWrongGuesses maximum amount of wrong guesses}. */
   public int getMaxWrongGuesses() {
     return this.maxWrongGuesses;
+  }
+
+  /** Sets the {@link #players players}. */
+  private void setPlayers(List<String> players) {
+    this.players = players;
+  }
+
+  /** Returns the {@link #players players}. */
+  private List<String> getPlayers() {
+    return this.players;
+  }
+
+  /** Returns the {@link #players players} as read-only. */
+  public List<String> getPlayersReadOnly() {
+    return Collections.unmodifiableList(getPlayers());
   }
 
   // ############################################################################################ //
